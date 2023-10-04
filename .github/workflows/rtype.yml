@@ -20,6 +20,9 @@ jobs:
       # Vous pouvez personnaliser cela en fonction de votre système
 
     - name: Configure le projet avec CMake
+      run: cmake -G "Unix Makefiles" .
+
+    - name: Configure le projet avec CMake
       run: cmake -B build  # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
 
     - name: Construire le projet
