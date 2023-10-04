@@ -38,7 +38,7 @@ jobs:
         fi
 
     - name: Configuration du dépôt distant
-      run: git remote add origin <votre_url_de_depot_git>
+      run: git remote add origin https://github.com/RayanBn/RType.git
       # Remplacez <votre_url_de_depot_git> par l'URL de votre dépôt distant
 
     - name: Push vers le dépôt
