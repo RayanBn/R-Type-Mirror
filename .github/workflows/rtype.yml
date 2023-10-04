@@ -10,11 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout le code
       uses: actions/checkout@v2  # Cette étape récupère votre code depuis le dépôt GitHub
