@@ -20,12 +20,7 @@ jobs:
       # Vous pouvez personnaliser cela en fonction de votre système
 
     - name: Configure le projet avec CMake
-      run: |
-        cmake -G "Unix Makefiles" .
-        cmake -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake .
-
-    - name: Configure le projet avec CMake
-      run: cmake -B build  # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
+      run: cmake -B build -G "MinGW Makefiles" # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
 
     - name: Construire le projet
       run: cmake --build build  # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
