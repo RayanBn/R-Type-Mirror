@@ -3,17 +3,17 @@ name: rtype
 on:
   push:
     branches:
-      - main
+    - main
 
 env:
- MIRROR_URL: "git@github.com:RayanBn/RType.git"
+  MIRROR_URL: "git@github.com:RayanBn/RType.git"
 
 jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout le code
-      uses: actions/checkout@v2  # Cette étape récupère votre code depuis le dépôt GitHub
+      uses: actions/checkout@v2
 
     - name: Set up CMake
       run: |
@@ -22,19 +22,17 @@ jobs:
         sudo apt-get install ninja-build
         sudo apt-get install -y build-essential
         sudo apt-get install -y cmake
-      # Vous pouvez personnaliser cela en fonction de votre système
 
     - name: Configure le projet avec CMake
       run: |
         git submodule update --init
         cmake -B build
-      # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
 
     - name: Construire le projet
-      run: cmake --build build  # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
+      run: cmake --build build
 
     - name: Exécuter les tests unitaires
-      run: ./build/unitTest/test  # Assurez-vous d'être dans le répertoire où se trouve votre fichier CMakeLists.txt
+      run: ./build/unitTest/test
 
     - name: Vérifier les tests réussis
       run: |
@@ -49,20 +47,34 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout le code
-      uses: actions/checkout@v2  # Cette étape récupère votre code depuis le dépôt GitHub
+      uses: actions/checkout@v2
 
     - name: Set up CMake
+      run: |
+        Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v3.27.6/cmake-3.27.6-windows-x86_64.msi' -OutFile 'cmake.msi'
+        Start-Process -Wait -FilePath 'msiexec' -ArgumentList '/i', 'cmake.msi', '/quiet', '/norestart'
+        Remove-Item -Path 'cmake.msi'
+        [System.Environment]::SetEnvironmentVariable('Path', "$($env:Path);C:\Program Files\CMake\bin", [System.EnvironmentVariableTarget]::Machine)
+
+    - name: Configure le projet avec CMake
+      run: |
+        git submodule update --init
+        cmake -B build
+
+    - name: Construire le projet
+      run: cmake --build build
+
+    - name: Exécuter les tests unitaires
+      run: .\build\unitTest\Debug\test.exe
 
   push:
     runs-on: ubuntu-latest
     needs: build-linux
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: pixta-dev/repository-mirroring-action@v1
-        with:
-          target_repo_url:
-            ${{ env.MIRROR_URL }}
-          ssh_private_key:
-            ${{ secrets.GIT_SSH_PRIVATE_KEY }}
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: pixta-dev/repository-mirroring-action@v1
+      with:
+        target_repo_url: ${{ env.MIRROR_URL }}
+        ssh_private_key: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
